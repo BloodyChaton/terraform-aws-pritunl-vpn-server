@@ -74,20 +74,19 @@ echo "Envoi des fichier setup fait"
 rm setup-key.txt
 
 #if this is a rebuild then the backup directory exist inside the S3 bucket
-
-aws s3 ls s3://${s3_backup_bucket}/most-recent/
-if [[ $? -eq 0 ]]; then
+DoesMostRecentExists=$(aws s3 ls s3://${s3_backup_bucket}/most-recent/ --recursive --summarize | grep "Total Objects: " | sed 's/[^0-9]*//g')
+if [ "$DoesMostRecentExists" -eq "0" ]; then
+  echo "File not found, generating default password"
+  echo "pritunl default-password > /tmp/default-password.txt" | at now + 10 minutes
+  echo "aws s3 cp /tmp/default-password.txt s3://${s3_backup_bucket}" | at now + 11 minutes
+  echo "rm /tmp/default-password.txt" | at now + 12 minutes
+else
   sudo systemctl stop pritunl
   aws s3 cp s3://${s3_backup_bucket}/most-recent/most-recent.tar.gz /pritunl/dump/
   #aws s3 cp s3://${s3_backup_bucket}/pritunl.uuid /var/lib/pritunl/pritunl.uuid
   cd /pritunl/dump/ && tar xvf most-recent.tar.gz
   mongorestore -d pritunl --nsInclude '*' /pritunl/dump/dump/pritunl/
   sudo systemctl start pritunl
-else
-  echo "File not found, generating default password"
-  echo "pritunl default-password > /tmp/default-password.txt" | at now + 10 minutes
-  echo "aws s3 cp /tmp/default-password.txt s3://${s3_backup_bucket}" | at now + 11 minutes
-  echo "rm /tmp/default-password.txt" | at now + 12 minutes
 fi
 
 cat <<"EOF" > /usr/sbin/mongobackup.sh
