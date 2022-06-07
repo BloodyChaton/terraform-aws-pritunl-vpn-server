@@ -11,7 +11,7 @@ data "template_file" "user_data" {
     {
       aws_region          = data.aws_region.current.name
       s3_backup_bucket    = local.backup_bucket_name
-      #healthchecks_io_key = "/pritunl/${var.resource_name_prefix}/healthchecks-io-key"
+      healthchecks_io_key = "/pritunl/${var.resource_name_prefix}/healthchecks-io-key"
     }
   )
 }
@@ -31,7 +31,7 @@ data "template_file" "iam_instance_role_policy" {
     resource_name_prefix = var.resource_name_prefix
     aws_region           = data.aws_region.current.name
     account_id           = data.aws_caller_identity.current.account_id
-    #ssm_key_prefix       = "/pritunl/${var.resource_name_prefix}/*"
+    ssm_key_prefix       = "/pritunl/${var.resource_name_prefix}/*"
     }
   )
 }
@@ -67,7 +67,7 @@ resource "aws_kms_alias" "parameter_store" {
   target_key_id = aws_kms_key.parameter_store.key_id
 }
 
-/*resource "aws_ssm_parameter" "healthchecks_io_key" {
+resource "aws_ssm_parameter" "healthchecks_io_key" {
   name      = "/pritunl/${var.resource_name_prefix}/healthchecks-io-key"
   type      = "SecureString"
   value     = var.healthchecks_io_key
@@ -78,7 +78,7 @@ resource "aws_kms_alias" "parameter_store" {
     tomap({"Name" = format("%s/%s/%s", "pritunl", var.resource_name_prefix, "healthchecks-io-key")}),
     var.tags,
   )
-}*/
+}
 
 resource "aws_s3_bucket" "backup" {
   depends_on = [aws_kms_key.parameter_store]

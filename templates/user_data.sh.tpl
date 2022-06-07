@@ -61,9 +61,9 @@ sudo systemctl start mongod pritunl
 
 
 cd /tmp
-# curl https://amazon-ssm-eu-west-1.s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm -o amazon-ssm-agent.rpm
-# yum install -y amazon-ssm-agent.rpm
-# status amazon-ssm-agent || start amazon-ssm-agent
+curl https://amazon-ssm-eu-west-1.s3.amazonaws.com/latest/linux_amd64/amazon-ssm-agent.rpm -o amazon-ssm-agent.rpm
+yum install -y amazon-ssm-agent.rpm
+status amazon-ssm-agent || start amazon-ssm-agent
 sleep 10
 pritunl setup-key > setup-key.txt
 
@@ -119,13 +119,13 @@ chmod 700 /usr/sbin/mongobackup.sh
 cat <<"EOF" > /etc/cron.daily/pritunl-backup
 #!/bin/bash -e
 export PATH="/usr/local/sbin:/usr/local/bin:$PATH"
-mongobackup.sh #&& \
-  #curl -fsS --retry 3 \
-  #"https://hchk.io/\$( aws --region=${aws_region} --output=text \
-  #                      ssm get-parameters \
-  #                      --names ${healthchecks_io_key} \
-  #                      --with-decryption \
-  #                      --query 'Parameters[*].Value')"
+mongobackup.sh # && \
+   curl -fsS --retry 3 \
+   "https://hchk.io/\$( aws --region=${aws_region} --output=text \
+                        ssm get-parameters \
+                        --names ${healthchecks_io_key} \
+                        --with-decryption \
+                        --query 'Parameters[*].Value')"
 EOF
 chmod 755 /etc/cron.daily/pritunl-backup
 
