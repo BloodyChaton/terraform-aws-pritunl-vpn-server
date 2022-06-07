@@ -47,10 +47,10 @@ variable "resource_name_prefix" {
   default     = "pritunl"
 }
 
-variable "healthchecks_io_key" {
+/*variable "healthchecks_io_key" {
   description = "Health check key for healthchecks.io"
   default     = "invalid"
-}
+}*/
 
 variable "internal_cidrs" {
   description = "[List] IP CIDRs to whitelist in the pritunl's security group"

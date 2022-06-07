@@ -119,7 +119,13 @@ chmod 700 /usr/sbin/mongobackup.sh
 cat <<"EOF" > /etc/cron.daily/pritunl-backup
 #!/bin/bash -e
 export PATH="/usr/local/sbin:/usr/local/bin:$PATH"
-mongobackup.sh
+mongobackup.sh #&& \
+  #curl -fsS --retry 3 \
+  #"https://hchk.io/\$( aws --region=${aws_region} --output=text \
+  #                      ssm get-parameters \
+  #                      --names ${healthchecks_io_key} \
+  #                      --with-decryption \
+  #                      --query 'Parameters[*].Value')"
 EOF
 chmod 755 /etc/cron.daily/pritunl-backup
 
