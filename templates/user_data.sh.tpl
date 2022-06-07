@@ -69,7 +69,6 @@ pritunl setup-key > setup-key.txt
 
 sleep 30
 aws s3 cp setup-key.txt s3://${s3_backup_bucket}
-#aws s3 cp /var/lib/pritunl/pritunl.uuid s3://${s3_backup_bucket}
 echo "Envoi des fichier setup fait"
 rm setup-key.txt
 
@@ -83,7 +82,6 @@ if [ "$DoesMostRecentExists" -eq "0" ]; then
 else
   sudo systemctl stop pritunl
   aws s3 cp s3://${s3_backup_bucket}/most-recent/most-recent.tar.gz /pritunl/dump/
-  #aws s3 cp s3://${s3_backup_bucket}/pritunl.uuid /var/lib/pritunl/pritunl.uuid
   cd /pritunl/dump/ && tar xvf most-recent.tar.gz
   mongorestore -d pritunl --nsInclude '*' /pritunl/dump/dump/pritunl/
   sudo systemctl start pritunl

@@ -1,3 +1,20 @@
+------
+V1.1 2022-06-07 UPDATED & ALTERNATIVE VERSION
+
+This version updates terraform commands to fit the newest version of terraform.
+Our projects did not need Healthcheck and though SSM, relevant lines were commented during code dev and untested.
+
+This version proposes the below enhancements :
+* Added to the initial setup a restore step, in case the terraforming needs to be done on an existing setup that went broken : your datas will be restored
+* All setup files and logs are sent to the S3 bucket (pritunl request 2 commands to be performed on the machine and therefore to log in SSH. If you don't want the machine to have anything to do with SSH, comment the aws_key_name lines) and wait for the infos to get to the S3. Unfortunately pritunl now requests two commands and prompt for them, the second will be in error if you don't enter the secret-key within 10 minutes it is received.
+* Since CentOS8 is now discontinued, Pritunl highly recommends the use of Oracle Linux (https://docs.pritunl.com/docs). The user_data template was filled accordingly. And to quote oracle (https://linux.oracle.com/switch/centos/) Oracle Linux is free, only the support costs money.
+
+
+INITIAL README below (still accurate)
+-------
+
+
+
 # Overview
 This module setups a VPN server for a VPC to connect to instances.
 
