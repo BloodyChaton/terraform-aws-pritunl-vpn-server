@@ -69,7 +69,7 @@ pritunl setup-key > setup-key.txt
 
 sleep 30
 aws s3 cp setup-key.txt s3://${s3_backup_bucket}
-aws s3 cp /var/lib/pritunl/pritunl.uuid s3://${s3_backup_bucket}
+#aws s3 cp /var/lib/pritunl/pritunl.uuid s3://${s3_backup_bucket}
 echo "Envoi des fichier setup fait"
 rm setup-key.txt
 
